@@ -1,7 +1,7 @@
-import './pages/index.css'
-import { initialCards } from './mocks/cards'
-import { createCard, likeCard, removeCard } from './scripts/cards'
-import { closeModal, modalListeners, openModal } from './scripts/modal';
+import './pages/index.css';
+import { initialCards } from './mocks/cards';
+import { createCard, likeCard, removeCard } from './scripts/cards';
+import { closeModal, openModal } from './scripts/modal';
 
 // Темплейт карточки
 
@@ -17,91 +17,68 @@ const popupTypeNewCard = document.querySelector('.popup_type_new-card');
 const popupTypeEdit = document.querySelector('.popup_type_edit');
 const popupTypeImage = document.querySelector('.popup_type_image');
 
+const name = document.querySelector('.profile__title');
+const description = document.querySelector('.profile__description');
+
+const popupImg = document.querySelector('.popup__image') ;
+const popupCaption = document.querySelector('.popup__caption');
+
 const forms = document.forms;
+const editForm = forms['edit-profile'];
+const addForm = forms['new-place'];
+
+// 
+
+const imageCallback = ({ name, link }) => {
+  popupImg.src = link;
+  popupImg.alt = `изображение в модальном окне, на котором ${name}`
+  popupCaption.textContent = name
+
+  openModal(popupTypeImage)
+};
 
 // Вывести карточки на страницу
 
 const initCards = (cards) => {
   cards.forEach((card) => {
-    cardsContainer.append(createCard(cardTemplate, card, removeCard, likeCard));
+    cardsContainer.append(createCard(cardTemplate, card, removeCard, likeCard, imageCallback));
   });
 };
 
 initCards(initialCards);
 
-// Функция отправки формы
+// Открытие попапов
 
-const submitForm = (form, node, callback, ...rest) => {
+addCardButton.addEventListener('click', () => {
+  openModal(popupTypeNewCard)
+});
 
-  const handler = (e) => {
-    callback?.(e, form, ...rest)
-
-    form.reset()
-    closeModal(node)
-  }
-
-  return handler
-}
-
-// коллбеки в слушатели submit форм
-
-const updateCardForm = (e, form, values) => {
-  e.preventDefault()
-
-  values.name.textContent = form.name.value
-  values.description.textContent = form.description.value
-}
-
-const createCardForm = (e, form) => {
-  e.preventDefault()
-
-  const card = {
-    name: form['place-name'].value,
-    link: form.link.value
-  }
-
-  cardsContainer.prepend(createCard(cardTemplate, card, removeCard, likeCard))
-}
-
-// Функции контента попапа
-
-const setCreatePopupContent = (node) => {
-  const createForm = forms['new-place']
-
-  const newPlaceFormSubmitListener = submitForm(createForm, node, createCardForm)
-  modalListeners['newPlaceFormSubmitListener'] = ['submit', newPlaceFormSubmitListener, createForm];
-  createForm.addEventListener('submit', newPlaceFormSubmitListener)
-}
-
-const setEditPopupContent = (node, { target }) => {
-  const profileInfo = target.closest('.profile__info')
-  const name = profileInfo.querySelector('.profile__title')
-  const description = profileInfo.querySelector('.profile__description')
-
-  const editForm = forms['edit-profile']
+editProfileButton.addEventListener('click', () => {
   editForm.name.value = name.textContent
   editForm.description.value = description.textContent
 
-  const editFormSubmitListener = submitForm(editForm, node, updateCardForm, { name, description });
-  modalListeners['editFormSubmitListener'] = ['submit', editFormSubmitListener, editForm];
-  editForm.addEventListener('submit', editFormSubmitListener)
-}
+  openModal(popupTypeEdit)
+});
 
-const setImagePopupContent = (node, { target }) => {
-  const card = target.closest('.card');
-  const { src, alt } = card.querySelector('.card__image')
-  const description = card.querySelector('.card__description').textContent
+// Сабмит попапов
 
-  const popupImg = node.querySelector('.popup__image')
-  const popupCaption = node.querySelector('.popup__caption')
+addForm.addEventListener('submit', (e) => {
+  e.preventDefault()
 
-  popupImg.src = src
-  popupImg.alt = alt
-  popupCaption.textContent = description
-}
+  const card = {
+    name: e.target['place-name'].value,
+    link: e.target.link.value,
+  }
+  
+  cardsContainer.prepend(createCard(cardTemplate, card, removeCard, likeCard, imageCallback));
+  closeModal(popupTypeNewCard)
+});
 
-// Открытие попапов
+editForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+  
+  name.textContent = e.target.name.value;
+  description.textContent = e.target.description.value;
 
-addCardButton.addEventListener('click', openModal(popupTypeNewCard, setCreatePopupContent))
-editProfileButton.addEventListener('click', openModal(popupTypeEdit, setEditPopupContent))
-cardsContainer.addEventListener('click', openModal(popupTypeImage, setImagePopupContent))
+  closeModal(popupTypeEdit)
+});

@@ -1,62 +1,30 @@
-export const modalListeners = {}
+const closeByEsc = (e) => {
+    if (e.key === "Escape") {
+        const openedPopup = document.querySelector('.popup_is-opened');
+        closeModal(openedPopup);
+    }
+};
 
-// Функция закрытия попапа
+const closeByClick = (e) => {
+    if (
+        !e.target.contains(e.currentTarget) && 
+        !e.target.classList.contains('popup__close')
+    ) return;
 
-const removeListeners = () => {
-    Object.entries(modalListeners).forEach(([key, [type, callback, node]]) => {
-        node.removeEventListener(type, callback);
-        delete modalListeners[key]
-    })
+    const openedPopup = document.querySelector('.popup_is-opened');
+    closeModal(openedPopup);
 }
 
-export const closeModal = (node) => {
-    removeListeners()
-    node.classList.remove('popup_is-opened')
-}
+export const closeModal = (node) => { 
+    node.classList.remove('popup_is-opened');
 
-const closeClickModal = (node) => {
-    const popupContent = node.querySelector('.popup__content');
+    node.removeEventListener('click', closeByClick);
+    document.removeEventListener('keydown', closeByEsc);
+};
 
-    const handler = (e) => {
-        if (popupContent.contains(e.target) && !e.target.closest('.popup__close')) {
-            return;
-        }
+export const openModal = (node) => {
+    node.classList.add('popup_is-opened');
 
-        closeModal(node)
-    };
-
-    return handler
-}
-
-const closeEscModal = (node) => {
-    const handler = (e) => {
-        if (e.key !== 'Escape') {
-            return;
-        }
-
-        closeModal(node)
-    };
-
-    return handler
-}
-
-// Функция открытия попапа
-
-export const openModal = (node, callback) => {
-
-    const handler = (e) => {
-        node.classList.add('popup_is-opened');
-
-        const closeClickModalListener = closeClickModal(node);
-        const closeEscModalListener = closeEscModal(node);
-        modalListeners['closeClickModalListener'] = ['click', closeClickModalListener, node];
-        modalListeners['closeEscModal'] = ['keyup', closeEscModalListener, document];
-
-        node.addEventListener('click', closeClickModalListener);
-        document.addEventListener('keyup', closeEscModalListener);
-
-        callback?.(node, e)
-    };
-
-    return handler
-}
+    node.addEventListener('click', closeByClick);
+    document.addEventListener('keydown', closeByEsc);
+};

@@ -1,6 +1,6 @@
 // Функция создания карточки
 
-export const createCard = (cardTemplate, { name, link }, removeCallback, likeCallback) => {
+export const createCard = (cardTemplate, { name, link }, removeCallback, likeCallback, imageCallback) => {
   const cardTemplateContent = cardTemplate.content;
   const cardNode = cardTemplateContent.querySelector(".card").cloneNode(true);
 
@@ -14,8 +14,9 @@ export const createCard = (cardTemplate, { name, link }, removeCallback, likeCal
 
   cardTitle.textContent = name;
 
-  removeButton.addEventListener('click', removeCallback)
-  likeButton.addEventListener('click', likeCallback)
+  removeButton.addEventListener('click', removeCallback);
+  likeButton.addEventListener('click', likeCallback);
+  cardImage.addEventListener('click', () => imageCallback({ name, link }));
 
   return cardNode;
 };
@@ -23,8 +24,6 @@ export const createCard = (cardTemplate, { name, link }, removeCallback, likeCal
 // Функция удаления карточки
 
 export const removeCard = (e) => {
-  e.stopPropagation()
-  
   const card = e.target.closest(".card");
   card.remove();
 };
@@ -32,8 +31,6 @@ export const removeCard = (e) => {
 // Функция лайка карточки
 
 export const likeCard = (e) => {
-  e.stopPropagation()
-
   const likeButton = e.target;
-  likeButton.classList.toggle('card__like-button_is-active')
-}
+  likeButton.classList.toggle('card__like-button_is-active');
+};
