@@ -4,11 +4,7 @@ import { closeModal, openModal } from './scripts/modal';
 import { serverActions } from './scripts/api';
 import { hideInputError, setEventListeners, toggleButtonState } from './scripts/validation';
 
-// Темплейт карточки
-
 const cardTemplate = document.getElementById("card-template");
-
-// DOM узлы
 
 const cardsContainer = document.querySelector(".places__list");
 const addCardButton = document.querySelector(".profile__add-button");
@@ -32,8 +28,6 @@ const editForm = forms['edit-profile'];
 const addForm = forms['new-place'];
 const removeCardForm = forms['remove-card'];
 const newAvatarForm = forms['new-avatar'];
-
-// 
 
 const toggleLike = (id, isLiked) => {
   let fn = null
@@ -77,8 +71,6 @@ const initProfile = (user) => {
     image.style.backgroundImage = `url(${user.avatar})`;
   }
 }
-
-// Вывести карточки на страницу
 
 const initCards = (cards, me) => {
   cards.forEach((card) => {
@@ -135,8 +127,6 @@ image.addEventListener('click', (e) => {
   clearValidation(popupTypeAvatarImage, newAvatarForm);
 })
 
-// Сабмит попапов
-
 addForm.addEventListener('submit', (e) => {
   e.preventDefault()
 
@@ -190,8 +180,6 @@ newAvatarForm.addEventListener('submit', (e) => {
   }).catch(console.error)
 })
 
-// Fetch Data
-
 Promise.all([
   serverActions.getMe(),
   serverActions.getCards(),
@@ -199,8 +187,6 @@ Promise.all([
   initProfile(me)
   initCards(cards, me)
 })
-
-// ------------ //
 
 const enableValidation = () => {
   const formList = Array.from(document.querySelectorAll('.popup__form'))
