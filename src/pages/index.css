@@ -1,13 +1,39 @@
-@import url('../vendor/normalize.css');
-@import url('../vendor/fonts.css');
-@import url('../blocks/page/page.css');
-@import url('../blocks/header/header.css');
-@import url('../blocks/content/content.css');
-@import url('../blocks/footer/footer.css');
-@import url('../blocks/profile/profile.css');
-@import url('../blocks/places/places.css');
-@import url('../blocks/card/card.css');
-@import url('../blocks/popup/popup.css');
-@import url('../blocks/popup/_is-animated/popup_is-animated.css');
-@import url('../blocks/popup/_is-opened/popup_is-opened.css');
+@import url("../vendor/normalize.css");
+@import url("../vendor/fonts.css");
+@import url("../blocks/page/page.css");
+@import url("../blocks/header/header.css");
+@import url("../blocks/content/content.css");
+@import url("../blocks/footer/footer.css");
+@import url("../blocks/profile/profile.css");
+@import url("../blocks/places/places.css");
+@import url("../blocks/card/card.css");
+@import url("../blocks/popup/popup.css");
+@import url("../blocks/popup/_is-animated/popup_is-animated.css");
+@import url("../blocks/popup/_is-opened/popup_is-opened.css");
 
+.popup__input:focus {
+  outline: none;
+}
+
+.form__input_type_error {
+  border-bottom: 1px solid #f00;
+}
+
+.form__input-error {
+  color: #f00;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.popup__button_disabled {
+  border: 1px solid #000;
+  color: #000;
+  opacity: 0.1;
+  background-color: transparent;
+}
+
+.popup__button_disabled:hover {
+  background-color: transparent;
+  cursor: not-allowed;
+}
