@@ -2,7 +2,7 @@ import './pages/index.css';
 import { createCard, likeCard, prepareCardNodes } from './scripts/cards';
 import { closeModal, openModal } from './scripts/modal';
 import { serverActions } from './scripts/api';
-import { hideInputError, setEventListeners, toggleButtonState } from './scripts/validation';
+import { clearValidation, enableValidation, hideInputError, setEventListeners, toggleButtonState } from './scripts/validation';
 
 const cardTemplate = document.getElementById("card-template");
 
@@ -97,18 +97,6 @@ const initCards = (cards, me) => {
   });
 };
 
-const clearValidation = (popup, form) => {
-  const inputList = Array.from(popup.querySelectorAll('.popup__input'));
-  const buttonElement = popup.querySelector('.popup__button');
-
-  toggleButtonState(inputList, buttonElement);
-
-  inputList.forEach((inputElement) => {
-    inputElement.setCustomValidity("");
-    hideInputError(form, inputElement)
-  })
-}
-
 addCardButton.addEventListener('click', () => {
   openModal(popupTypeNewCard)
   clearValidation(popupTypeNewCard, addForm);
@@ -187,17 +175,5 @@ Promise.all([
   initProfile(me)
   initCards(cards, me)
 })
-
-const enableValidation = () => {
-  const formList = Array.from(document.querySelectorAll('.popup__form'))
-
-  formList.forEach((formElement) => {
-    formElement.addEventListener('submit', (evt) => {
-      evt.preventDefault()
-    })
-
-    setEventListeners(formElement)
-  })
-}
 
 enableValidation()
