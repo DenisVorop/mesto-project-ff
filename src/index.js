@@ -1,8 +1,8 @@
 import './pages/index.css';
-import { createCard, likeCard, prepareCardNodes } from './scripts/cards';
+import { createCard, likeCard, prepareInitCardNode } from './scripts/card';
 import { closeModal, openModal } from './scripts/modal';
 import { serverActions } from './scripts/api';
-import { clearValidation, enableValidation, hideInputError, setEventListeners, toggleButtonState } from './scripts/validation';
+import { clearValidation, enableValidation } from './scripts/validation';
 
 const cardTemplate = document.getElementById("card-template");
 
@@ -29,8 +29,18 @@ const addForm = forms['new-place'];
 const removeCardForm = forms['remove-card'];
 const newAvatarForm = forms['new-avatar'];
 
-const toggleLike = (id, isLiked) => {
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'form__input-error_active',
+}
+
+const toggleLike = (id, initialLike) => {
   let fn = null
+  let isLiked = initialLike
   return (e) => {
     if (isLiked) {
       fn = serverActions.removeLike
@@ -74,20 +84,20 @@ const initProfile = (user) => {
 
 const initCards = (cards, me) => {
   cards.forEach((card) => {
-    const isLiked = card.likes.find(user => user._id === me._id)
+    const isLikedByMe = card.likes.find(user => user._id === me._id)
 
     const cardNode = createCard(
       cardTemplate,
       card,
       removeCardCallback,
-      toggleLike(card._id, isLiked),
+      toggleLike(card._id, isLikedByMe),
       imageCallback
     )
 
-    prepareCardNodes(
+    prepareInitCardNode(
       cardNode,
       {
-        isLiked,
+        isLiked: isLikedByMe,
         isOwner: card.owner._id === me._id,
         likesCount: card.likes.length,
       }
@@ -98,21 +108,23 @@ const initCards = (cards, me) => {
 };
 
 addCardButton.addEventListener('click', () => {
+  addForm.reset();
+  clearValidation(addForm, validationConfig);
   openModal(popupTypeNewCard)
-  clearValidation(popupTypeNewCard, addForm);
 });
 
 editProfileButton.addEventListener('click', () => {
   editForm.name.value = name.textContent
   editForm.description.value = description.textContent
 
+  clearValidation(editForm, validationConfig);
   openModal(popupTypeEdit)
-  clearValidation(popupTypeEdit, editForm);
 });
 
 image.addEventListener('click', (e) => {
+  newAvatarForm.reset();
+  clearValidation(newAvatarForm, validationConfig);
   openModal(popupTypeAvatarImage)
-  clearValidation(popupTypeAvatarImage, newAvatarForm);
 })
 
 addForm.addEventListener('submit', (e) => {
@@ -176,4 +188,4 @@ Promise.all([
   initCards(cards, me)
 })
 
-enableValidation()
+enableValidation(validationConfig)

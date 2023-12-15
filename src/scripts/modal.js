@@ -11,13 +11,11 @@ const closeByClick = (e) => {
         !e.target.classList.contains('popup__close')
     ) return;
 
-    const openedPopup = document.querySelector('.popup_is-opened');
-    closeModal(openedPopup);
+    closeModal(e.currentTarget);
 }
 
 export const closeModal = (node) => { 
     node.classList.remove('popup_is-opened');
-    node.querySelector('.popup__form')?.reset();
 
     node.removeEventListener('click', closeByClick);
     document.removeEventListener('keydown', closeByEsc);

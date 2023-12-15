@@ -37,7 +37,7 @@ export const likeCard = (e, likesCount) => {
   likeButton.classList.toggle('card__like-button_is-active');
 };
 
-export const prepareCardNodes = (cardNode, options) => {
+export const prepareInitCardNode = (cardNode, options) => {
   const removeButton = cardNode.querySelector(".card__delete-button");
   const likeButton = cardNode.querySelector(".card__like-button");
 

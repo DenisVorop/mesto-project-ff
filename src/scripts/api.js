@@ -6,7 +6,7 @@ const methods = {
     DELETE: 'DELETE',
 }
 
-const routes = {
+const paths = {
     me: () => '/users/me',
     cards: () => '/cards',
     card: (id) => `/cards/${id}`,
@@ -21,7 +21,7 @@ const config = {
     }
 }
 
-const resultProcessing = res => {
+const processResult = res => {
     if (res.ok) {
         return res.json()
     }
@@ -37,16 +37,16 @@ export const API = ({ url, method = methods.GET, body }) => {
     })
 }
 
-const getMe = () => API({ url: routes.me() }).then(resultProcessing)
-const updateMe = (body) => API({ url: routes.me(), method: methods.PATCH, body }).then(resultProcessing)
-const updateAvatar = (body) => API({ url: `${routes.me()}/avatar`, method: methods.PATCH, body }).then(resultProcessing)
+const getMe = () => API({ url: paths.me() }).then(processResult)
+const updateMe = (body) => API({ url: paths.me(), method: methods.PATCH, body }).then(processResult)
+const updateAvatar = (body) => API({ url: `${paths.me()}/avatar`, method: methods.PATCH, body }).then(processResult)
 
-const getCards = () => API({ url: routes.cards() }).then(resultProcessing)
-const createCard = (body) => API({ url: routes.cards(), method: methods.POST, body }).then(resultProcessing)
-const removeCard = (id) => API({ url: routes.card(id), method: methods.DELETE }).then(resultProcessing)
+const getCards = () => API({ url: paths.cards() }).then(processResult)
+const createCard = (body) => API({ url: paths.cards(), method: methods.POST, body }).then(processResult)
+const removeCard = (id) => API({ url: paths.card(id), method: methods.DELETE }).then(processResult)
 
-const addLike = (id) => API({ url: routes.likeCard(id), method: methods.PUT }).then(resultProcessing)
-const removeLike = (id) => API({ url: routes.likeCard(id), method: methods.DELETE }).then(resultProcessing)
+const addLike = (id) => API({ url: paths.likeCard(id), method: methods.PUT }).then(processResult)
+const removeLike = (id) => API({ url: paths.likeCard(id), method: methods.DELETE }).then(processResult)
 
 export const serverActions = {
     getMe,
